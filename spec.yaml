@@ -3,7 +3,7 @@ info:
   title: Docspera Integration Endpoints - OpenAPI 3.0.0
   x-logo:
     url: https://docspera.com/assets/D3/pic/Logo-Full-White-Padded.png
-    backgroundColor: "#0096FA"
+    backgroundColor: '#0096FA'
     href: https://docspera.com
   contact:
     email: luca@docspera.com
@@ -35,8 +35,7 @@ paths:
         - integration
       summary: Ingest Record Set
       description: Ingest a new record set, including a patient
-      operationId: ingest
-
+      operationId: ingestNew
       requestBody:
         $ref: '#/components/requestBodies/IngestOperation'
       responses:
@@ -44,15 +43,12 @@ paths:
           $ref: '#/components/requestBodies/IngestOperation'
         '405':
           description: Invalid input
-      security:
-        - okta_auth:
-            - write
     put:
       tags:
         - integration
       summary: Update Record Set
       description: Update a record set, including a patient
-      operationId: ingest
+      operationId: ingestUpdate
       parameters:
         - name: practiceId
           required: true
@@ -66,9 +62,6 @@ paths:
           $ref: '#/components/requestBodies/IngestOperation'
         '405':
           description: Invalid input
-      security:
-        - okta_auth:
-            - write
   /organizations/{practiceId}/patients/{patientId}:
     parameters:
       - name: practiceId
@@ -120,9 +113,6 @@ paths:
           description: Not found
         '405':
           description: Invalid input
-      security:
-        - okta_auth:
-            - write
   /organizations/{practiceId}/patients/{patientId}/observations:
     parameters:
       - name: practiceId
@@ -179,7 +169,7 @@ paths:
         - observations
       summary: Get observation
       description: Get a patient's observation record
-      operationId: getObservations
+      operationId: getObservation
       responses:
         '200':
           description: successful operation
@@ -213,9 +203,6 @@ paths:
           description: Not found
         '405':
           description: Invalid input
-      security:
-        - okta_auth:
-            - write
   /organizations/{practiceId}/patients/{patientId}/medications:
     parameters:
       - name: practiceId
@@ -304,9 +291,6 @@ paths:
           description: Not found
         '405':
           description: Invalid input
-      security:
-        - okta_auth:
-            - write
   /organizations/{practiceId}/patients/{patientId}/conditions:
     parameters:
       - name: practiceId
@@ -395,9 +379,6 @@ paths:
           description: Not found
         '405':
           description: Invalid input
-      security:
-        - okta_auth:
-            - write
   /organizations/{practiceId}/patients/{patientId}/allergies:
     parameters:
       - name: practiceId
@@ -486,9 +467,6 @@ paths:
           description: Not found
         '405':
           description: Invalid input
-      security:
-        - okta_auth:
-            - write
   /organizations/{practiceId}/patients/{patientId}/appointments:
     parameters:
       - name: practiceId
@@ -577,9 +555,6 @@ paths:
           description: Not found
         '405':
           description: Invalid input
-      security:
-        - okta_auth:
-            - write
   /organizations/{practiceId}/patients/{patientId}/surgery:
     parameters:
       - name: practiceId
@@ -631,9 +606,6 @@ paths:
           description: Not found
         '405':
           description: Invalid input
-      security:
-        - okta_auth:
-            - write
 components:
   schemas:
     Value:
@@ -650,7 +622,11 @@ components:
       properties:
         comparator:
           type: string
-          enum: [ '<', '<=', '>=', '>' ]
+          enum:
+            - <
+            - <=
+            - '>='
+            - '>'
         unit:
           type: string
         system:
@@ -751,7 +727,9 @@ components:
             format: uri
           display:
             type: string
-        required: [ code, system ]
+        required:
+          - code
+          - system
     Period:
       type: object
       properties:
@@ -776,19 +754,21 @@ components:
           properties:
             family:
               type: string
-              example: "Santarella"
+              example: Santarella
             given:
               type: array
               items:
                 type: string
-              example: [ 'Luca', 'M' ]
+              example:
+                - Luca
+                - M
         mrn:
           type: string
-          example: "LS12345"
+          example: LS12345
         dob:
           type: string
           format: date
-          example: "1965-01-01"
+          example: '1965-01-01'
         insurance:
           type: object
           nullable: true
@@ -809,10 +789,15 @@ components:
             - period
         gender:
           type: string
-          enum: [ 'male','female','other' ]
+          enum:
+            - male
+            - female
+            - other
         sex:
           type: string
-          enum: [ 'male','female' ]
+          enum:
+            - male
+            - female
         demographics:
           type: object
           properties:
@@ -895,13 +880,12 @@ components:
         - name
         - type
         - specialty
-      example: {
-        "user_id": 2239,
-        "name": "Rachel Green",
-        "type": 1,
-        "sub": 1,
-        "specialty": "Orthopaedics"
-      }
+      example:
+        user_id: 2239
+        name: Rachel Green
+        type: 1
+        sub: 1
+        specialty: Orthopaedics
     Appointment:
       allOf:
         - $ref: '#/components/schemas/Period'
@@ -912,7 +896,9 @@ components:
               readOnly: true
             status:
               type: string
-              enum: [ 'booked','cancelled' ]
+              enum:
+                - booked
+                - cancelled
             description:
               type: string
             serviceType:
@@ -1002,7 +988,9 @@ components:
               readOnly: true
             status:
               type: string
-          required: [ id, status ]
+          required:
+            - id
+            - status
     Prescription:
       allOf:
         - $ref: '#/components/schemas/Period'
@@ -1013,7 +1001,9 @@ components:
               readOnly: true
             status:
               type: string
-          required: [ id, status ]
+          required:
+            - id
+            - status
     Medication:
       type: object
       properties:
@@ -1087,6 +1077,3 @@ components:
               - pastProcedures
               - medications
               - observations
-  securitySchemes:
-    okta_auth:
-      type: oauth2
