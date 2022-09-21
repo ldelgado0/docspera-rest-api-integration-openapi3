@@ -883,17 +883,17 @@ components:
           type: integer
         name:
           type: string
+          readOnly: true
         type:
           type: integer
-        sub:
-          type: integer
+          readOnly: true
         specialty:
           type: string
+          readOnly: true
       required:
         - user_id
         - name
         - type
-        - sub
         - specialty
       example: {
         "user_id": 2239,
