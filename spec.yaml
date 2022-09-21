@@ -12,13 +12,13 @@ info:
   version: 1.0.0
 servers:
   - url: https://int.velys.docvisor.dev/api/v1
-    name: DEV
+    description: DEV
   - url: https://int.velys.docharp.com/api/v1
-    name: SIT
+    description: SIT
   - url: https://int.velys.docvisor.com/api/v1
-    name: QA
+    description: QA
   - url: https://int.carecoordination.velys.jnj/api/v1
-    name: PROD
+    description: PROD
 tags:
   - name: integration
     description: Integration Endpoints
@@ -38,7 +38,6 @@ paths:
             type: number
       requestBody:
         $ref: '#/components/requestBodies/IngestOperation'
-        required: true
       responses:
         '200':
           $ref: '#/components/requestBodies/IngestOperation'
@@ -74,8 +73,8 @@ components:
         value:
           type: string
       required:
-      - value
-      - unit
+        - value
+        - unit
     Condition:
       type: object
       properties:
@@ -89,8 +88,8 @@ components:
           items:
             $ref: '#/components/schemas/DiagnosticReport'
       required:
-      - code
-      - diagnosticReports
+        - code
+        - diagnosticReports
     Observation:
       type: object
       properties:
@@ -105,10 +104,10 @@ components:
         value:
           $ref: '#/components/schemas/Value'
       required:
-      - id
-      - code
-      - effectiveDateTime
-      - value
+        - id
+        - code
+        - effectiveDateTime
+        - value
     DiagnosticReport:
       type: object
       properties:
@@ -133,16 +132,16 @@ components:
           items:
             $ref: '#/components/schemas/Observation'
       required:
-      - status
-      - category
-      - code
-      - effectiveDateTime
-      - issued
-      - observations
+        - status
+        - category
+        - code
+        - effectiveDateTime
+        - issued
+        - observations
     CodeableConcept:
       type: object
       required:
-      - coding
+        - coding
       properties:
         coding:
           $ref: '#/components/schemas/Coding'
@@ -171,8 +170,8 @@ components:
           type: string
           format: date-time
       required:
-      - start
-      - end
+        - start
+        - end
     Patient:
       type: object
       properties:
@@ -190,7 +189,7 @@ components:
               type: array
               items:
                 type: string
-              example: ['Luca', 'M']
+              example: [ 'Luca', 'M' ]
         mrn:
           type: string
           example: "LS12345"
@@ -211,14 +210,14 @@ components:
             period:
               $ref: '#/components/schemas/Period'
           required:
-          - id
-          - type
-          - policy
-          - group
-          - period
+            - id
+            - type
+            - policy
+            - group
+            - period
         gender:
           type: string
-          enum: ['male','female','other']
+          enum: [ 'male','female','other' ]
         sex:
           type: string
           enum: [ 'male','female' ]
@@ -230,8 +229,8 @@ components:
             race:
               type: string
           required:
-          - ethnicity
-          - race
+            - ethnicity
+            - race
         homeAddress:
           type: object
           properties:
@@ -273,18 +272,18 @@ components:
           format: email
           nullable: true
       required:
-      - name
-      - mrn
-      - dob
-      - insurance
-      - gender
-      - demographics
-      - supplemental
-      - homeAddress
-      - mobilePhone
-      - homePhone
-      - email
-      - home
+        - name
+        - mrn
+        - dob
+        - insurance
+        - gender
+        - demographics
+        - supplemental
+        - homeAddress
+        - mobilePhone
+        - homePhone
+        - email
+        - home
     Participant:
       type: object
       properties:
@@ -299,11 +298,11 @@ components:
         specialty:
           type: string
       required:
-      - user_id
-      - name
-      - type
-      - sub
-      - specialty
+        - user_id
+        - name
+        - type
+        - sub
+        - specialty
       example: {
         "user_id": 2239,
         "name": "Rachel Green",
@@ -321,25 +320,25 @@ components:
               readOnly: true
             status:
               type: string
-              enum: ['booked','cancelled']
+              enum: [ 'booked','cancelled' ]
             description:
               type: string
             serviceType:
               type: array
               items:
-                  $ref: '#/components/schemas/CodeableConcept'
+                $ref: '#/components/schemas/CodeableConcept'
             participants:
               type: array
               items:
                 $ref: '#/components/schemas/Participant'
           required:
-          - status
-          - description
-          - start
-          - end
-          - created
-          - serviceType
-          - participants
+            - status
+            - description
+            - start
+            - end
+            - created
+            - serviceType
+            - participants
     Surgery:
       allOf:
         - $ref: '#/components/schemas/Appointment'
@@ -359,9 +358,9 @@ components:
         severity:
           type: string
       required:
-      - manifestation
-      - description
-      - severity
+        - manifestation
+        - description
+        - severity
     Allergy:
       type: object
       properties:
@@ -392,15 +391,15 @@ components:
           items:
             $ref: '#/components/schemas/Reaction'
       required:
-      - clinicalStatus
-      - verificationStatus
-      - type
-      - criticality
-      - category
-      - code
-      - onsetDateTime
-      - recordedDate
-      - reaction
+        - clinicalStatus
+        - verificationStatus
+        - type
+        - criticality
+        - category
+        - code
+        - onsetDateTime
+        - recordedDate
+        - reaction
     MedicationAdministration:
       allOf:
         - $ref: '#/components/schemas/Period'
@@ -411,7 +410,7 @@ components:
               readOnly: true
             status:
               type: string
-          required: [id, status]
+          required: [ id, status ]
     Prescription:
       allOf:
         - $ref: '#/components/schemas/Period'
@@ -422,7 +421,7 @@ components:
               readOnly: true
             status:
               type: string
-          required: [id, status]
+          required: [ id, status ]
     Medication:
       type: object
       properties:
@@ -435,9 +434,9 @@ components:
           items:
             $ref: '#/components/schemas/MedicationAdministration'
       required:
-      - code
-      - prescription
-      - administration
+        - code
+        - prescription
+        - administration
   requestBodies:
     IngestOperation:
       description: Ingest Operation
@@ -476,9 +475,9 @@ components:
                     status:
                       type: string
                   required:
-                  - code
-                  - performedDateTime
-                  - status
+                    - code
+                    - performedDateTime
+                    - status
               medications:
                 type: array
                 items:
@@ -488,14 +487,14 @@ components:
                 items:
                   $ref: '#/components/schemas/Observation'
             required:
-            - patient
-            - surgery
-            - clinicalAppointments
-            - conditions
-            - allergies
-            - pastProcedures
-            - medications
-            - observations
+              - patient
+              - surgery
+              - clinicalAppointments
+              - conditions
+              - allergies
+              - pastProcedures
+              - medications
+              - observations
   securitySchemes:
     okta_auth:
       type: oauth2
