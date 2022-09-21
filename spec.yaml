@@ -24,11 +24,34 @@ tags:
     description: Integration Endpoints
 paths:
   /organizations/{practiceId}/ingest:
+    parameters:
+      - name: practiceId
+        required: true
+        in: path
+        schema:
+          type: number
     post:
       tags:
         - integration
       summary: Ingest Record Set
       description: Ingest a new record set, including a patient
+      operationId: ingest
+
+      requestBody:
+        $ref: '#/components/requestBodies/IngestOperation'
+      responses:
+        '200':
+          $ref: '#/components/requestBodies/IngestOperation'
+        '405':
+          description: Invalid input
+      security:
+        - okta_auth:
+            - write
+    put:
+      tags:
+        - integration
+      summary: Update Record Set
+      description: Update a record set, including a patient
       operationId: ingest
       parameters:
         - name: practiceId
@@ -41,6 +64,571 @@ paths:
       responses:
         '200':
           $ref: '#/components/requestBodies/IngestOperation'
+        '405':
+          description: Invalid input
+      security:
+        - okta_auth:
+            - write
+  /organizations/{practiceId}/patients/{patientId}:
+    parameters:
+      - name: practiceId
+        description: Practice ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: patientId
+        description: Patient ID
+        required: true
+        in: path
+        schema:
+          type: number
+    get:
+      tags:
+        - patient
+      summary: Get patient
+      description: Get a patient record
+      operationId: getPatient
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        '404':
+          description: Not found
+    put:
+      tags:
+        - patient
+      summary: Update Patient
+      description: Update a patient record
+      operationId: updatePatient
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Patient'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        '404':
+          description: Not found
+        '405':
+          description: Invalid input
+      security:
+        - okta_auth:
+            - write
+  /organizations/{practiceId}/patients/{patientId}/observations:
+    parameters:
+      - name: practiceId
+        description: Practice ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: patientId
+        description: Patient ID
+        required: true
+        in: path
+        schema:
+          type: number
+    get:
+      tags:
+        - observations
+      summary: Get observations
+      description: Get a patient's observation records
+      operationId: getObservations
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Observation'
+        '404':
+          description: Not found
+  /organizations/{practiceId}/patients/{patientId}/observations/{observationId}:
+    parameters:
+      - name: practiceId
+        description: Practice ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: patientId
+        description: Patient ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: observationId
+        description: Observation ID
+        required: true
+        in: path
+        schema:
+          type: number
+    get:
+      tags:
+        - observations
+      summary: Get observation
+      description: Get a patient's observation record
+      operationId: getObservations
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Observation'
+        '404':
+          description: Not found
+    put:
+      tags:
+        - observations
+      summary: Update Observation
+      description: Update a patient's observation record
+      operationId: updateObservation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Observation'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Observation'
+        '404':
+          description: Not found
+        '405':
+          description: Invalid input
+      security:
+        - okta_auth:
+            - write
+  /organizations/{practiceId}/patients/{patientId}/medications:
+    parameters:
+      - name: practiceId
+        description: Practice ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: patientId
+        description: Patient ID
+        required: true
+        in: path
+        schema:
+          type: number
+    get:
+      tags:
+        - medications
+      summary: Get medications
+      description: Get a patient's medication records
+      operationId: getMedications
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Medication'
+        '404':
+          description: Not found
+  /organizations/{practiceId}/patients/{patientId}/medications/{medicationId}:
+    parameters:
+      - name: practiceId
+        description: Practice ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: patientId
+        description: Patient ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: medicationId
+        description: Medication ID
+        required: true
+        in: path
+        schema:
+          type: number
+    get:
+      tags:
+        - medications
+      summary: Get medication
+      description: Get a patient's medication record
+      operationId: getMedication
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Medication'
+        '404':
+          description: Not found
+    put:
+      tags:
+        - medications
+      summary: Update Medication
+      description: Update a patient's medication record
+      operationId: updateMedication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Medication'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Medication'
+        '404':
+          description: Not found
+        '405':
+          description: Invalid input
+      security:
+        - okta_auth:
+            - write
+  /organizations/{practiceId}/patients/{patientId}/conditions:
+    parameters:
+      - name: practiceId
+        description: Practice ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: patientId
+        description: Patient ID
+        required: true
+        in: path
+        schema:
+          type: number
+    get:
+      tags:
+        - conditions
+      summary: Get conditions
+      description: Get a patient's condition records
+      operationId: getConditions
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Condition'
+        '404':
+          description: Not found
+  /organizations/{practiceId}/patients/{patientId}/conditions/{conditionId}:
+    parameters:
+      - name: practiceId
+        description: Practice ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: patientId
+        description: Patient ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: conditionId
+        description: Condition ID
+        required: true
+        in: path
+        schema:
+          type: number
+    get:
+      tags:
+        - conditions
+      summary: Get condition
+      description: Get a patient's condition record
+      operationId: getCondition
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Condition'
+        '404':
+          description: Not found
+    put:
+      tags:
+        - conditions
+      summary: Update Condition
+      description: Update a patient's condition record
+      operationId: updateCondition
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Condition'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Condition'
+        '404':
+          description: Not found
+        '405':
+          description: Invalid input
+      security:
+        - okta_auth:
+            - write
+  /organizations/{practiceId}/patients/{patientId}/allergies:
+    parameters:
+      - name: practiceId
+        description: Practice ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: patientId
+        description: Patient ID
+        required: true
+        in: path
+        schema:
+          type: number
+    get:
+      tags:
+        - allergies
+      summary: Get allergies
+      description: Get a patient's allergy records
+      operationId: getAllergies
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Allergy'
+        '404':
+          description: Not found
+  /organizations/{practiceId}/patients/{patientId}/allergies/{allergyId}:
+    parameters:
+      - name: practiceId
+        description: Practice ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: patientId
+        description: Patient ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: allergyId
+        description: Allergy ID
+        required: true
+        in: path
+        schema:
+          type: number
+    get:
+      tags:
+        - allergies
+      summary: Get allergy
+      description: Get a patient's allergy record
+      operationId: getAllergy
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Allergy'
+        '404':
+          description: Not found
+    put:
+      tags:
+        - allergies
+      summary: Update Allergy
+      description: Update a patient's allergy record
+      operationId: updateAllergy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Allergy'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Allergy'
+        '404':
+          description: Not found
+        '405':
+          description: Invalid input
+      security:
+        - okta_auth:
+            - write
+  /organizations/{practiceId}/patients/{patientId}/appointments:
+    parameters:
+      - name: practiceId
+        description: Practice ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: patientId
+        description: Patient ID
+        required: true
+        in: path
+        schema:
+          type: number
+    get:
+      tags:
+        - appointments
+      summary: Get appointments
+      description: Get a patient's appointment records
+      operationId: getAppointments
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Appointment'
+        '404':
+          description: Not found
+  /organizations/{practiceId}/patients/{patientId}/appointments/{appointmentId}:
+    parameters:
+      - name: practiceId
+        description: Practice ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: patientId
+        description: Patient ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: appointmentId
+        description: Appointment ID
+        required: true
+        in: path
+        schema:
+          type: number
+    get:
+      tags:
+        - appointments
+      summary: Get appointment
+      description: Get a patient's appointment record
+      operationId: getAppointment
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        '404':
+          description: Not found
+    put:
+      tags:
+        - appointments
+      summary: Update Appointment
+      description: Update a patient's appointment record
+      operationId: updateAppointment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Appointment'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        '404':
+          description: Not found
+        '405':
+          description: Invalid input
+      security:
+        - okta_auth:
+            - write
+  /organizations/{practiceId}/patients/{patientId}/surgery:
+    parameters:
+      - name: practiceId
+        description: Practice ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: patientId
+        description: Patient ID
+        required: true
+        in: path
+        schema:
+          type: number
+    get:
+      tags:
+        - surgery
+      summary: Get surgery
+      description: Get a patient's surgery record
+      operationId: getSurgery
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Surgery'
+        '404':
+          description: Not found
+    put:
+      tags:
+        - surgery
+      summary: Update Surgery
+      description: Update a patient's surgery record
+      operationId: updateSurgery
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Surgery'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Surgery'
+        '404':
+          description: Not found
         '405':
           description: Invalid input
       security:
