@@ -671,6 +671,10 @@ components:
           readOnly: true
         code:
           $ref: '#/components/schemas/CodeableConcept'
+        onset:
+          type: string
+          format: date-time
+          description: Date of condition onset
         diagnosticReports:
           type: array
           items:
