@@ -62,6 +62,31 @@ paths:
           $ref: '#/components/requestBodies/IngestOperation'
         '405':
           description: Invalid input
+  /organizations/{practiceId}/patients/{patientId}/recordset:
+    parameters:
+      - name: practiceId
+        description: Practice ID
+        required: true
+        in: path
+        schema:
+          type: number
+      - name: patientId
+        description: Patient ID
+        required: true
+        in: path
+        schema:
+          type: number
+    get:
+      tags:
+        - integration
+      summary: Get Ingestion Record Set
+      description: Get the latest ingestion record set for a patient
+      operationId: getIngest
+      responses:
+        '200':
+          $ref: '#/components/requestBodies/IngestOperation'
+        '405':
+          description: Invalid input
   /organizations/{practiceId}/patients/{patientId}:
     parameters:
       - name: practiceId
