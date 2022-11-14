@@ -1,165 +1,205 @@
 openapi: 3.0.3
 info:
   title: Docspera Integration Endpoints - OpenAPI 3.0.0
-  x-logo:
-    url: https://docspera.com/assets/D3/pic/Logo-Full-White-Padded.png
-    backgroundColor: '#0096FA'
-    href: https://docspera.com
   contact:
     email: luca@docspera.com
   license:
     name: Proprietary
   version: 1.0.0
+  x-logo:
+    url: https://docspera.com/assets/D3/pic/Logo-Full-White-Padded.png
+    backgroundColor: '#0096FA'
+    href: https://docspera.com
 servers:
-  - url: https://int.velys.docvisor.dev/api/v1
-    description: DEV
-  - url: https://int.velys.docharp.com/api/v1
-    description: SIT
-  - url: https://int.velys.docvisor.com/api/v1
-    description: QA
-  - url: https://int.carecoordination.velys.jnj/api/v1
-    description: PROD
+- url: https://int.velys.docvisor.dev/api/v1
+  description: DEV
+- url: https://int.velys.docharp.com/api/v1
+  description: SIT
+- url: https://int.velys.docvisor.com/api/v1
+  description: QA
+- url: https://int.carecoordination.velys.jnj/api/v1
+  description: PROD
+security:
+- basicAuth: []
 tags:
-  - name: integration
-    description: Integration Endpoints
+- name: integration
+  description: Integration Endpoints
 paths:
   /organizations/{practiceId}/ingest:
-    parameters:
-      - name: practiceId
-        required: true
-        in: path
-        schema:
-          type: number
-    post:
-      tags:
-        - integration
-      summary: Ingest Record Set
-      description: Ingest a new record set, including a patient
-      operationId: ingestNew
-      requestBody:
-        $ref: '#/components/requestBodies/IngestOperation'
-      responses:
-        '200':
-          $ref: '#/components/requestBodies/IngestOperation'
-        '405':
-          description: Invalid input
     put:
       tags:
-        - integration
+      - integration
       summary: Update Record Set
-      description: Update a record set, including a patient
-      operationId: ingestUpdate
+      description: "Update a record set, including a patient"
+      operationId: ingest_update
       parameters:
-        - name: practiceId
-          required: true
-          in: path
-          schema:
-            type: number
+      - name: practiceId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
       requestBody:
         $ref: '#/components/requestBodies/IngestOperation'
       responses:
-        '200':
+        "200":
           $ref: '#/components/requestBodies/IngestOperation'
-        '405':
+        "405":
           description: Invalid input
-  /organizations/{practiceId}/patients/{patientId}/recordset:
-    parameters:
+      x-openapi-router-controller: swagger_server.controllers.integration_controller
+    post:
+      tags:
+      - integration
+      summary: Ingest Record Set
+      description: "Ingest a new record set, including a patient"
+      operationId: ingest_new
+      parameters:
       - name: practiceId
-        description: Practice ID
-        required: true
         in: path
+        required: true
+        style: simple
+        explode: false
         schema:
           type: number
-      - name: patientId
-        description: Patient ID
-        required: true
-        in: path
-        schema:
-          type: number
+      requestBody:
+        $ref: '#/components/requestBodies/IngestOperation'
+      responses:
+        "200":
+          $ref: '#/components/requestBodies/IngestOperation'
+        "405":
+          description: Invalid input
+      x-openapi-router-controller: swagger_server.controllers.integration_controller
+  /organizations/{practiceId}/patients/{patientId}/recordset:
     get:
       tags:
-        - integration
+      - integration
       summary: Get Ingestion Record Set
       description: Get the latest ingestion record set for a patient
-      operationId: getIngest
-      responses:
-        '200':
-          $ref: '#/components/requestBodies/IngestOperation'
-        '405':
-          description: Invalid input
-  /organizations/{practiceId}/patients/{patientId}:
-    parameters:
+      operationId: get_ingest
+      parameters:
       - name: practiceId
+        in: path
         description: Practice ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
-          type: number
+          type: integer
       - name: patientId
+        in: path
         description: Patient ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
-          type: number
+          type: integer
+      responses:
+        "200":
+          $ref: '#/components/requestBodies/IngestOperation'
+        "405":
+          description: Invalid input
+      x-openapi-router-controller: swagger_server.controllers.integration_controller
+  /organizations/{practiceId}/patients/{patientId}:
     get:
       tags:
-        - patient
+      - patient
       summary: Get patient
       description: Get a patient record
-      operationId: getPatient
+      operationId: get_patient
+      parameters:
+      - name: practiceId
+        in: path
+        description: Practice ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      - name: patientId
+        in: path
+        description: Patient ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Patient'
-        '404':
+        "404":
           description: Not found
+      x-openapi-router-controller: swagger_server.controllers.patient_controller
     put:
       tags:
-        - patient
+      - patient
       summary: Update Patient
       description: Update a patient record
-      operationId: updatePatient
+      operationId: update_patient
+      parameters:
+      - name: practiceId
+        in: path
+        description: Practice ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      - name: patientId
+        in: path
+        description: Patient ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Patient'
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Patient'
-        '404':
+        "404":
           description: Not found
-        '405':
+        "405":
           description: Invalid input
+      x-openapi-router-controller: swagger_server.controllers.patient_controller
   /organizations/{practiceId}/patients/{patientId}/observations:
-    parameters:
+    get:
+      tags:
+      - observations
+      summary: Get observations
+      description: Get a patient's observation records
+      operationId: get_observations
+      parameters:
       - name: practiceId
+        in: path
         description: Practice ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
       - name: patientId
+        in: path
         description: Patient ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
-    get:
-      tags:
-        - observations
-      summary: Get observations
-      description: Get a patient's observation records
-      operationId: getObservations
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
@@ -167,36 +207,44 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Observation'
-        '404':
+                x-content-type: application/json
+        "404":
           description: Not found
+      x-openapi-router-controller: swagger_server.controllers.observations_controller
   /organizations/{practiceId}/patients/{patientId}/observations/{observationId}:
-    parameters:
+    get:
+      tags:
+      - observations
+      summary: Get observation
+      description: Get a patient's observation record
+      operationId: get_observation
+      parameters:
       - name: practiceId
+        in: path
         description: Practice ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
       - name: patientId
+        in: path
         description: Patient ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
       - name: observationId
+        in: path
         description: Observation ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
-    get:
-      tags:
-        - observations
-      summary: Get observation
-      description: Get a patient's observation record
-      operationId: getObservation
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
@@ -204,52 +252,84 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Observation'
-        '404':
+                x-content-type: application/json
+        "404":
           description: Not found
+      x-openapi-router-controller: swagger_server.controllers.observations_controller
     put:
       tags:
-        - observations
+      - observations
       summary: Update Observation
       description: Update a patient's observation record
-      operationId: updateObservation
+      operationId: update_observation
+      parameters:
+      - name: practiceId
+        in: path
+        description: Practice ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      - name: patientId
+        in: path
+        description: Patient ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      - name: observationId
+        in: path
+        description: Observation ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Observation'
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Observation'
-        '404':
+        "404":
           description: Not found
-        '405':
+        "405":
           description: Invalid input
+      x-openapi-router-controller: swagger_server.controllers.observations_controller
   /organizations/{practiceId}/patients/{patientId}/medications:
-    parameters:
+    get:
+      tags:
+      - medications
+      summary: Get medications
+      description: Get a patient's medication records
+      operationId: get_medications
+      parameters:
       - name: practiceId
+        in: path
         description: Practice ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
       - name: patientId
+        in: path
         description: Patient ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
-    get:
-      tags:
-        - medications
-      summary: Get medications
-      description: Get a patient's medication records
-      operationId: getMedications
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
@@ -257,87 +337,126 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Medication'
-        '404':
+                x-content-type: application/json
+        "404":
           description: Not found
+      x-openapi-router-controller: swagger_server.controllers.medications_controller
   /organizations/{practiceId}/patients/{patientId}/medications/{medicationId}:
-    parameters:
+    get:
+      tags:
+      - medications
+      summary: Get medication
+      description: Get a patient's medication record
+      operationId: get_medication
+      parameters:
       - name: practiceId
+        in: path
         description: Practice ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
       - name: patientId
+        in: path
         description: Patient ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
       - name: medicationId
+        in: path
         description: Medication ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
-    get:
-      tags:
-        - medications
-      summary: Get medication
-      description: Get a patient's medication record
-      operationId: getMedication
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Medication'
-        '404':
+        "404":
           description: Not found
+      x-openapi-router-controller: swagger_server.controllers.medications_controller
     put:
       tags:
-        - medications
+      - medications
       summary: Update Medication
       description: Update a patient's medication record
-      operationId: updateMedication
+      operationId: update_medication
+      parameters:
+      - name: practiceId
+        in: path
+        description: Practice ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      - name: patientId
+        in: path
+        description: Patient ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      - name: medicationId
+        in: path
+        description: Medication ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Medication'
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Medication'
-        '404':
+        "404":
           description: Not found
-        '405':
+        "405":
           description: Invalid input
+      x-openapi-router-controller: swagger_server.controllers.medications_controller
   /organizations/{practiceId}/patients/{patientId}/conditions:
-    parameters:
+    get:
+      tags:
+      - conditions
+      summary: Get conditions
+      description: Get a patient's condition records
+      operationId: get_conditions
+      parameters:
       - name: practiceId
+        in: path
         description: Practice ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
       - name: patientId
+        in: path
         description: Patient ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
-    get:
-      tags:
-        - conditions
-      summary: Get conditions
-      description: Get a patient's condition records
-      operationId: getConditions
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
@@ -345,87 +464,126 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Condition'
-        '404':
+                x-content-type: application/json
+        "404":
           description: Not found
+      x-openapi-router-controller: swagger_server.controllers.conditions_controller
   /organizations/{practiceId}/patients/{patientId}/conditions/{conditionId}:
-    parameters:
+    get:
+      tags:
+      - conditions
+      summary: Get condition
+      description: Get a patient's condition record
+      operationId: get_condition
+      parameters:
       - name: practiceId
+        in: path
         description: Practice ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
       - name: patientId
+        in: path
         description: Patient ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
       - name: conditionId
+        in: path
         description: Condition ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
-    get:
-      tags:
-        - conditions
-      summary: Get condition
-      description: Get a patient's condition record
-      operationId: getCondition
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Condition'
-        '404':
+        "404":
           description: Not found
+      x-openapi-router-controller: swagger_server.controllers.conditions_controller
     put:
       tags:
-        - conditions
+      - conditions
       summary: Update Condition
       description: Update a patient's condition record
-      operationId: updateCondition
+      operationId: update_condition
+      parameters:
+      - name: practiceId
+        in: path
+        description: Practice ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      - name: patientId
+        in: path
+        description: Patient ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      - name: conditionId
+        in: path
+        description: Condition ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Condition'
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Condition'
-        '404':
+        "404":
           description: Not found
-        '405':
+        "405":
           description: Invalid input
+      x-openapi-router-controller: swagger_server.controllers.conditions_controller
   /organizations/{practiceId}/patients/{patientId}/allergies:
-    parameters:
+    get:
+      tags:
+      - allergies
+      summary: Get allergies
+      description: Get a patient's allergy records
+      operationId: get_allergies
+      parameters:
       - name: practiceId
+        in: path
         description: Practice ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
       - name: patientId
+        in: path
         description: Patient ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
-    get:
-      tags:
-        - allergies
-      summary: Get allergies
-      description: Get a patient's allergy records
-      operationId: getAllergies
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
@@ -433,87 +591,126 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Allergy'
-        '404':
+                x-content-type: application/json
+        "404":
           description: Not found
+      x-openapi-router-controller: swagger_server.controllers.allergies_controller
   /organizations/{practiceId}/patients/{patientId}/allergies/{allergyId}:
-    parameters:
+    get:
+      tags:
+      - allergies
+      summary: Get allergy
+      description: Get a patient's allergy record
+      operationId: get_allergy
+      parameters:
       - name: practiceId
+        in: path
         description: Practice ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
       - name: patientId
+        in: path
         description: Patient ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
       - name: allergyId
+        in: path
         description: Allergy ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
-    get:
-      tags:
-        - allergies
-      summary: Get allergy
-      description: Get a patient's allergy record
-      operationId: getAllergy
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Allergy'
-        '404':
+        "404":
           description: Not found
+      x-openapi-router-controller: swagger_server.controllers.allergies_controller
     put:
       tags:
-        - allergies
+      - allergies
       summary: Update Allergy
       description: Update a patient's allergy record
-      operationId: updateAllergy
+      operationId: update_allergy
+      parameters:
+      - name: practiceId
+        in: path
+        description: Practice ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      - name: patientId
+        in: path
+        description: Patient ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      - name: allergyId
+        in: path
+        description: Allergy ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Allergy'
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Allergy'
-        '404':
+        "404":
           description: Not found
-        '405':
+        "405":
           description: Invalid input
+      x-openapi-router-controller: swagger_server.controllers.allergies_controller
   /organizations/{practiceId}/patients/{patientId}/appointments:
-    parameters:
+    get:
+      tags:
+      - appointments
+      summary: Get appointments
+      description: Get a patient's appointment records
+      operationId: get_appointments
+      parameters:
       - name: practiceId
+        in: path
         description: Practice ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
       - name: patientId
+        in: path
         description: Patient ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
-    get:
-      tags:
-        - appointments
-      summary: Get appointments
-      description: Get a patient's appointment records
-      operationId: getAppointments
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
@@ -521,123 +718,175 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Appointment'
-        '404':
+                x-content-type: application/json
+        "404":
           description: Not found
+      x-openapi-router-controller: swagger_server.controllers.appointments_controller
   /organizations/{practiceId}/patients/{patientId}/appointments/{appointmentId}:
-    parameters:
+    get:
+      tags:
+      - appointments
+      summary: Get appointment
+      description: Get a patient's appointment record
+      operationId: get_appointment
+      parameters:
       - name: practiceId
+        in: path
         description: Practice ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
       - name: patientId
+        in: path
         description: Patient ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
       - name: appointmentId
+        in: path
         description: Appointment ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
-    get:
-      tags:
-        - appointments
-      summary: Get appointment
-      description: Get a patient's appointment record
-      operationId: getAppointment
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Appointment'
-        '404':
+        "404":
           description: Not found
+      x-openapi-router-controller: swagger_server.controllers.appointments_controller
     put:
       tags:
-        - appointments
+      - appointments
       summary: Update Appointment
       description: Update a patient's appointment record
-      operationId: updateAppointment
+      operationId: update_appointment
+      parameters:
+      - name: practiceId
+        in: path
+        description: Practice ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      - name: patientId
+        in: path
+        description: Patient ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      - name: appointmentId
+        in: path
+        description: Appointment ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Appointment'
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Appointment'
-        '404':
+        "404":
           description: Not found
-        '405':
+        "405":
           description: Invalid input
+      x-openapi-router-controller: swagger_server.controllers.appointments_controller
   /organizations/{practiceId}/patients/{patientId}/surgery:
-    parameters:
+    get:
+      tags:
+      - surgery
+      summary: Get surgery
+      description: Get a patient's surgery record
+      operationId: get_surgery
+      parameters:
       - name: practiceId
+        in: path
         description: Practice ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
       - name: patientId
+        in: path
         description: Patient ID
         required: true
-        in: path
+        style: simple
+        explode: false
         schema:
           type: number
-    get:
-      tags:
-        - surgery
-      summary: Get surgery
-      description: Get a patient's surgery record
-      operationId: getSurgery
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Surgery'
-        '404':
+        "404":
           description: Not found
+      x-openapi-router-controller: swagger_server.controllers.surgery_controller
     put:
       tags:
-        - surgery
+      - surgery
       summary: Update Surgery
       description: Update a patient's surgery record
-      operationId: updateSurgery
+      operationId: update_surgery
+      parameters:
+      - name: practiceId
+        in: path
+        description: Practice ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      - name: patientId
+        in: path
+        description: Patient ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Surgery'
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Surgery'
-        '404':
+        "404":
           description: Not found
-        '405':
+        "405":
           description: Invalid input
-security:
-  - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.surgery_controller
 components:
-  securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
   schemas:
     Value:
       type: object
@@ -648,16 +897,30 @@ components:
           $ref: '#/components/schemas/CodeableConcept'
         valuePeriod:
           $ref: '#/components/schemas/Period'
+      example:
+        valueCodeableConcept: null
+        valuePeriod:
+          start: 2000-01-23T04:56:07.000+00:00
+          end: 2000-01-23T04:56:07.000+00:00
+        valueQuantity:
+          comparator: <
+          unit: unit
+          system: http://example.com/aeiou
+          code: code
+          value: value
     Quantity:
+      required:
+      - unit
+      - value
       type: object
       properties:
         comparator:
           type: string
           enum:
-            - <
-            - <=
-            - '>='
-            - '>'
+          - <
+          - <=
+          - '>='
+          - '>'
         unit:
           type: string
         system:
@@ -667,34 +930,159 @@ components:
           type: string
         value:
           type: string
-      required:
-        - value
-        - unit
+      example:
+        comparator: <
+        unit: unit
+        system: http://example.com/aeiou
+        code: code
+        value: value
     Condition:
+      required:
+      - code
+      - diagnosticReports
       type: object
       properties:
         id:
           type: string
-          readOnly: true
         code:
           $ref: '#/components/schemas/CodeableConcept'
         onset:
           type: string
-          format: date-time
           description: Date of condition onset
+          format: date-time
         diagnosticReports:
           type: array
           items:
             $ref: '#/components/schemas/DiagnosticReport'
-      required:
-        - code
-        - diagnosticReports
+      example:
+        code:
+          coding:
+          - code: code
+            system: http://example.com/aeiou
+            display: display
+          - code: code
+            system: http://example.com/aeiou
+            display: display
+          text: text
+        diagnosticReports:
+        - code: null
+          effectiveDateTime: 2000-01-23T04:56:07.000+00:00
+          observations:
+          - code:
+              coding:
+              - code: code
+                system: http://example.com/aeiou
+                display: display
+              - code: code
+                system: http://example.com/aeiou
+                display: display
+              text: text
+            effectiveDateTime: 2000-01-23T04:56:07.000+00:00
+            id: id
+            value:
+              valueCodeableConcept: null
+              valuePeriod:
+                start: 2000-01-23T04:56:07.000+00:00
+                end: 2000-01-23T04:56:07.000+00:00
+              valueQuantity:
+                comparator: <
+                unit: unit
+                system: http://example.com/aeiou
+                code: code
+                value: value
+          - code:
+              coding:
+              - code: code
+                system: http://example.com/aeiou
+                display: display
+              - code: code
+                system: http://example.com/aeiou
+                display: display
+              text: text
+            effectiveDateTime: 2000-01-23T04:56:07.000+00:00
+            id: id
+            value:
+              valueCodeableConcept: null
+              valuePeriod:
+                start: 2000-01-23T04:56:07.000+00:00
+                end: 2000-01-23T04:56:07.000+00:00
+              valueQuantity:
+                comparator: <
+                unit: unit
+                system: http://example.com/aeiou
+                code: code
+                value: value
+          id: id
+          category:
+          - null
+          - null
+          issued: issued
+          status: status
+        - code: null
+          effectiveDateTime: 2000-01-23T04:56:07.000+00:00
+          observations:
+          - code:
+              coding:
+              - code: code
+                system: http://example.com/aeiou
+                display: display
+              - code: code
+                system: http://example.com/aeiou
+                display: display
+              text: text
+            effectiveDateTime: 2000-01-23T04:56:07.000+00:00
+            id: id
+            value:
+              valueCodeableConcept: null
+              valuePeriod:
+                start: 2000-01-23T04:56:07.000+00:00
+                end: 2000-01-23T04:56:07.000+00:00
+              valueQuantity:
+                comparator: <
+                unit: unit
+                system: http://example.com/aeiou
+                code: code
+                value: value
+          - code:
+              coding:
+              - code: code
+                system: http://example.com/aeiou
+                display: display
+              - code: code
+                system: http://example.com/aeiou
+                display: display
+              text: text
+            effectiveDateTime: 2000-01-23T04:56:07.000+00:00
+            id: id
+            value:
+              valueCodeableConcept: null
+              valuePeriod:
+                start: 2000-01-23T04:56:07.000+00:00
+                end: 2000-01-23T04:56:07.000+00:00
+              valueQuantity:
+                comparator: <
+                unit: unit
+                system: http://example.com/aeiou
+                code: code
+                value: value
+          id: id
+          category:
+          - null
+          - null
+          issued: issued
+          status: status
+        id: id
+        onset: 2000-01-23T04:56:07.000+00:00
     Observation:
+      required:
+      - code
+      - effectiveDateTime
+      - id
+      - value
       type: object
       properties:
         id:
           type: string
-          readOnly: true
         code:
           $ref: '#/components/schemas/CodeableConcept'
         effectiveDateTime:
@@ -702,17 +1090,41 @@ components:
           format: date-time
         value:
           $ref: '#/components/schemas/Value'
-      required:
-        - id
-        - code
-        - effectiveDateTime
-        - value
+      example:
+        code:
+          coding:
+          - code: code
+            system: http://example.com/aeiou
+            display: display
+          - code: code
+            system: http://example.com/aeiou
+            display: display
+          text: text
+        effectiveDateTime: 2000-01-23T04:56:07.000+00:00
+        id: id
+        value:
+          valueCodeableConcept: null
+          valuePeriod:
+            start: 2000-01-23T04:56:07.000+00:00
+            end: 2000-01-23T04:56:07.000+00:00
+          valueQuantity:
+            comparator: <
+            unit: unit
+            system: http://example.com/aeiou
+            code: code
+            value: value
     DiagnosticReport:
+      required:
+      - category
+      - code
+      - effectiveDateTime
+      - issued
+      - observations
+      - status
       type: object
       properties:
         id:
           type: string
-          readOnly: true
         status:
           type: string
         category:
@@ -730,38 +1142,86 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Observation'
-      required:
-        - status
-        - category
-        - code
-        - effectiveDateTime
-        - issued
-        - observations
+      example:
+        code: null
+        effectiveDateTime: 2000-01-23T04:56:07.000+00:00
+        observations:
+        - code:
+            coding:
+            - code: code
+              system: http://example.com/aeiou
+              display: display
+            - code: code
+              system: http://example.com/aeiou
+              display: display
+            text: text
+          effectiveDateTime: 2000-01-23T04:56:07.000+00:00
+          id: id
+          value:
+            valueCodeableConcept: null
+            valuePeriod:
+              start: 2000-01-23T04:56:07.000+00:00
+              end: 2000-01-23T04:56:07.000+00:00
+            valueQuantity:
+              comparator: <
+              unit: unit
+              system: http://example.com/aeiou
+              code: code
+              value: value
+        - code:
+            coding:
+            - code: code
+              system: http://example.com/aeiou
+              display: display
+            - code: code
+              system: http://example.com/aeiou
+              display: display
+            text: text
+          effectiveDateTime: 2000-01-23T04:56:07.000+00:00
+          id: id
+          value:
+            valueCodeableConcept: null
+            valuePeriod:
+              start: 2000-01-23T04:56:07.000+00:00
+              end: 2000-01-23T04:56:07.000+00:00
+            valueQuantity:
+              comparator: <
+              unit: unit
+              system: http://example.com/aeiou
+              code: code
+              value: value
+        id: id
+        category:
+        - null
+        - null
+        issued: issued
+        status: status
     CodeableConcept:
-      type: object
       required:
-        - coding
+      - coding
+      type: object
       properties:
         coding:
           $ref: '#/components/schemas/Coding'
         text:
           type: string
+      example:
+        coding:
+        - code: code
+          system: http://example.com/aeiou
+          display: display
+        - code: code
+          system: http://example.com/aeiou
+          display: display
+        text: text
     Coding:
       type: array
       items:
-        type: object
-        properties:
-          code:
-            type: string
-          system:
-            type: string
-            format: uri
-          display:
-            type: string
-        required:
-          - code
-          - system
+        $ref: '#/components/schemas/Coding_inner'
     Period:
+      required:
+      - end
+      - start
       type: object
       properties:
         start:
@@ -770,103 +1230,52 @@ components:
         end:
           type: string
           format: date-time
-      required:
-        - start
-        - end
+      example:
+        start: 2000-01-23T04:56:07.000+00:00
+        end: 2000-01-23T04:56:07.000+00:00
     Patient:
+      required:
+      - demographics
+      - dob
+      - email
+      - gender
+      - homeAddress
+      - homePhone
+      - insurance
+      - mobilePhone
+      - mrn
+      - name
       type: object
       properties:
         id:
-          type: string
-          readOnly: true
+          type: integer
           description: DocSpera Patient ID
         name:
-          type: object
-          properties:
-            family:
-              type: string
-              example: Santarella
-            given:
-              type: array
-              items:
-                type: string
-              example:
-                - Luca
-                - M
+          $ref: '#/components/schemas/Patient_name'
         mrn:
           type: string
           example: LS12345
         dob:
           type: string
           format: date
-          example: '1965-01-01'
+          example: 1965-01-01
         insurance:
-          type: object
-          nullable: true
-          properties:
-            type:
-              type: string
-            policy:
-              type: string
-            group:
-              type: string
-            period:
-              $ref: '#/components/schemas/Period'
-          required:
-            - id
-            - type
-            - policy
-            - group
-            - period
+          $ref: '#/components/schemas/Patient_insurance'
         gender:
           type: string
           enum:
-            - male
-            - female
-            - other
+          - male
+          - female
+          - other
         sex:
           type: string
           enum:
-            - male
-            - female
+          - male
+          - female
         demographics:
-          type: object
-          properties:
-            ethnicity:
-              type: string
-            race:
-              type: string
-          required:
-            - ethnicity
-            - race
+          $ref: '#/components/schemas/Patient_demographics'
         homeAddress:
-          type: object
-          properties:
-            line_1:
-              type: string
-              nullable: true
-            line_2:
-              type: string
-              nullable: true
-            city:
-              type: string
-              nullable: true
-            state:
-              type: string
-              nullable: true
-            zip:
-              type: string
-              nullable: true
-            country:
-              type: string
-              nullable: true
-          required:
-            - line_1
-            - line_2
-            - city
-            - state
-            - zip
-            - country
+          $ref: '#/components/schemas/Patient_homeAddress'
         mobilePhone:
           type: string
           format: phone
@@ -879,20 +1288,43 @@ components:
           type: string
           format: email
           nullable: true
-      required:
-        - name
-        - mrn
-        - dob
-        - insurance
-        - gender
-        - demographics
-        - supplemental
-        - homeAddress
-        - mobilePhone
-        - homePhone
-        - email
-        - home
+      example:
+        insurance:
+          period:
+            start: 2000-01-23T04:56:07.000+00:00
+            end: 2000-01-23T04:56:07.000+00:00
+          type: type
+          policy: policy
+          group: group
+        gender: male
+        mobilePhone: mobilePhone
+        dob: 1965-01-01T00:00:00.000+00:00
+        sex: male
+        homePhone: homePhone
+        name:
+          given:
+          - Luca
+          - M
+          family: Santarella
+        mrn: LS12345
+        id: id
+        email: ""
+        demographics:
+          ethnicity: ethnicity
+          race: race
+        homeAddress:
+          line_1: line_1
+          zip: zip
+          line_2: line_2
+          country: country
+          city: city
+          state: state
     Participant:
+      required:
+      - name
+      - specialty
+      - type
+      - user_id
       type: object
       properties:
         user_id:
@@ -906,11 +1338,6 @@ components:
         specialty:
           type: string
           readOnly: true
-      required:
-        - user_id
-        - name
-        - type
-        - specialty
       example:
         user_id: 2239
         name: Rachel Green
@@ -919,43 +1346,49 @@ components:
         specialty: Orthopaedics
     Appointment:
       allOf:
-        - $ref: '#/components/schemas/Period'
-        - type: object
-          properties:
-            id:
-              type: string
-              readOnly: true
-            status:
-              type: string
-              enum:
-                - booked
-                - cancelled
-            description:
-              type: string
-            serviceType:
-              type: array
-              items:
-                $ref: '#/components/schemas/CodeableConcept'
-            participants:
-              type: array
-              items:
-                $ref: '#/components/schemas/Participant'
-          required:
-            - status
-            - description
-            - start
-            - end
-            - created
-            - serviceType
-            - participants
+      - $ref: '#/components/schemas/Period'
+      - required:
+        - description
+        - end
+        - participants
+        - serviceType
+        - start
+        - status
+        type: object
+        properties:
+          id:
+            type: integer
+          status:
+            type: string
+            enum:
+            - booked
+            - cancelled
+          description:
+            type: string
+          created:
+            type: string
+            format: datetime
+            readOnly: true
+          serviceType:
+            type: array
+            items:
+              $ref: '#/components/schemas/CodeableConcept'
+          participants:
+            type: array
+            items:
+              $ref: '#/components/schemas/Participant'
     Surgery:
       allOf:
-        - $ref: '#/components/schemas/Appointment'
-        - type: object
-          properties:
-            assigned:
-              $ref: '#/components/schemas/Participant'
+      - $ref: '#/components/schemas/Appointment'
+      - type: object
+        properties:
+          assigned:
+            $ref: '#/components/schemas/Participant'
     Reaction:
+      required:
+      - description
+      - manifestation
+      - severity
       type: object
       properties:
         manifestation:
@@ -966,16 +1399,27 @@ components:
           type: string
         severity:
           type: string
-      required:
-        - manifestation
-        - description
-        - severity
+      example:
+        severity: severity
+        manifestation:
+        - null
+        - null
+        description: description
     Allergy:
+      required:
+      - category
+      - clinicalStatus
+      - code
+      - criticality
+      - onsetDateTime
+      - reaction
+      - recordedDate
+      - type
+      - verificationStatus
       type: object
       properties:
         id:
           type: string
-          readOnly: true
         clinicalStatus:
           type: string
         verificationStatus:
@@ -995,47 +1439,71 @@ components:
         recordedDate:
           type: string
         reaction:
-          type: array
           minItems: 0
+          type: array
           items:
             $ref: '#/components/schemas/Reaction'
-      required:
-        - clinicalStatus
-        - verificationStatus
-        - type
-        - criticality
+      example:
+        code:
+          coding:
+          - code: code
+            system: http://example.com/aeiou
+            display: display
+          - code: code
+            system: http://example.com/aeiou
+            display: display
+          text: text
+        reaction:
+        - severity: severity
+          manifestation:
+          - null
+          - null
+          description: description
+        - severity: severity
+          manifestation:
+          - null
+          - null
+          description: description
+        verificationStatus: verificationStatus
+        recordedDate: recordedDate
+        criticality: criticality
+        id: id
+        clinicalStatus: clinicalStatus
+        type: type
+        category:
         - category
-        - code
-        - onsetDateTime
-        - recordedDate
-        - reaction
+        - category
+        onsetDateTime: onsetDateTime
     MedicationAdministration:
       allOf:
-        - $ref: '#/components/schemas/Period'
-        - type: object
-          properties:
-            id:
-              type: string
-              readOnly: true
-            status:
-              type: string
-          required:
-            - id
-            - status
+      - $ref: '#/components/schemas/Period'
+      - required:
+        - id
+        - status
+        type: object
+        properties:
+          id:
+            type: string
+            readOnly: true
+          status:
+            type: string
     Prescription:
       allOf:
-        - $ref: '#/components/schemas/Period'
-        - type: object
-          properties:
-            id:
-              type: string
-              readOnly: true
-            status:
-              type: string
-          required:
-            - id
-            - status
+      - $ref: '#/components/schemas/Period'
+      - required:
+        - id
+        - status
+        type: object
+        properties:
+          id:
+            type: string
+          status:
+            type: string
     Medication:
+      required:
+      - administration
+      - code
+      - prescription
       type: object
       properties:
         code:
@@ -1046,17 +1514,148 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MedicationAdministration'
+      example:
+        administrations:
+        - ""
+        - ""
+        code:
+          coding:
+          - code: code
+            system: http://example.com/aeiou
+            display: display
+          - code: code
+            system: http://example.com/aeiou
+            display: display
+          text: text
+        prescription: ""
+    Coding_inner:
       required:
-        - code
-        - prescription
-        - administration
+      - code
+      - system
+      type: object
+      properties:
+        code:
+          type: string
+          nullable: true
+        system:
+          type: string
+          format: uri
+          nullable: true
+        display:
+          type: string
+          nullable: true
+      example:
+        code: code
+        system: http://example.com/aeiou
+        display: display
+    Patient_name:
+      type: object
+      properties:
+        family:
+          type: string
+          example: Santarella
+        given:
+          type: array
+          example:
+          - Luca
+          - M
+          items:
+            type: string
+      example:
+        given:
+        - Luca
+        - M
+        family: Santarella
+    Patient_insurance:
+      required:
+      - group
+      - period
+      - policy
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+          writeOnly: true
+        type:
+          type: string
+        policy:
+          type: string
+        group:
+          type: string
+        period:
+          $ref: '#/components/schemas/Period'
+      nullable: true
+      example:
+        period:
+          start: 2000-01-23T04:56:07.000+00:00
+          end: 2000-01-23T04:56:07.000+00:00
+        type: type
+        policy: policy
+        group: group
+    Patient_demographics:
+      required:
+      - ethnicity
+      - race
+      type: object
+      properties:
+        ethnicity:
+          type: string
+        race:
+          type: string
+      example:
+        ethnicity: ethnicity
+        race: race
+    Patient_homeAddress:
+      required:
+      - city
+      - country
+      - line_1
+      - line_2
+      - state
+      - zip
+      type: object
+      properties:
+        line_1:
+          type: string
+          nullable: true
+        line_2:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        zip:
+          type: string
+          nullable: true
+        country:
+          type: string
+          nullable: true
+      example:
+        line_1: line_1
+        zip: zip
+        line_2: line_2
+        country: country
+        city: city
+        state: state
   requestBodies:
     IngestOperation:
       description: Ingest Operation
-      required: true
       content:
         application/json:
           schema:
+            required:
+            - allergies
+            - clinicalAppointments
+            - conditions
+            - medications
+            - observations
+            - pastProcedures
+            - patient
+            - surgery
             type: object
             properties:
               patient:
@@ -1078,6 +1677,10 @@ components:
               pastProcedures:
                 type: array
                 items:
+                  required:
+                  - code
+                  - performedDateTime
+                  - status
                   type: object
                   properties:
                     code:
@@ -1087,10 +1690,6 @@ components:
                       format: datetime
                     status:
                       type: string
-                  required:
-                    - code
-                    - performedDateTime
-                    - status
               medications:
                 type: array
                 items:
@@ -1099,12 +1698,10 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/Observation'
-            required:
-              - patient
-              - surgery
-              - clinicalAppointments
-              - conditions
-              - allergies
-              - pastProcedures
-              - medications
-              - observations
+      required: true
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      x-basicInfoFunc: swagger_server.controllers.authorization_controller.check_basicAuth
+
