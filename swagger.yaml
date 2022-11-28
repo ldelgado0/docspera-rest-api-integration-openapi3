@@ -1187,6 +1187,7 @@ components:
         insurance:
           $ref: '#/components/schemas/Patient_insurance'
         gender:
+          nullable: true
           type: string
           enum:
             - male
