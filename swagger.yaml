@@ -1302,6 +1302,10 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Participant'
+            location:
+              type: string
+              description: Location of the appointment
+              required: false
     Surgery:
       allOf:
         - $ref: '#/components/schemas/Appointment'
