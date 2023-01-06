@@ -15,7 +15,7 @@ servers:
     description: DEV
   - url: https://int.velys.docharp.com/api/v1
     description: SIT
-  - url: https://int.velys.docvisor.com/api/v1
+  - url: https://int.velys.d4.docvisor.com/api/v1
     description: QA
   - url: https://int.carecoordination.velys.jnj/api/v1
     description: PROD
