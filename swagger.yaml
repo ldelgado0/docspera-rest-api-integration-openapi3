@@ -865,6 +865,7 @@ components:
       required:
         - code
         - diagnosticReports
+        - status
       type: object
       properties:
         id:
@@ -879,6 +880,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DiagnosticReport'
+        status:
+          type: string
       example:
         code:
           coding:
@@ -998,12 +1001,14 @@ components:
             status: status
         id: id
         onset: 2000-01-23T04:56:07.000+00:00
+        status: status
     Observation:
       required:
         - code
         - effectiveDateTime
         - id
         - value
+        - status
       type: object
       properties:
         id:
@@ -1015,6 +1020,8 @@ components:
           format: date-time
         value:
           $ref: '#/components/schemas/Value'
+        status:
+          type: string
       example:
         code:
           coding:
@@ -1038,6 +1045,7 @@ components:
             system: http://example.com/aeiou
             code: code
             value: value
+        status: status
     DiagnosticReport:
       required:
         - category
