@@ -1423,11 +1423,17 @@ components:
         - required:
             - id
             - status
+            - intent
+            - priority
           type: object
           properties:
             id:
               type: string
             status:
+              type: string
+            intent:
+              type: string
+            priority:
               type: string
     Medication:
       required:
