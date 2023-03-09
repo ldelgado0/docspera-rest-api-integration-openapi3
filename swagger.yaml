@@ -1297,6 +1297,21 @@ components:
               enum:
                 - booked
                 - cancelled
+                - proposed
+                - pending
+                - arrived
+                - fulfilled
+                - noshow
+                - entered-in-error
+                - checked-in
+                - waitlist
+                - preparation
+                - in-progress
+                - not-done
+                - on-hold
+                - stopped
+                - completed
+                - unknown
             description:
               type: string
             created:
